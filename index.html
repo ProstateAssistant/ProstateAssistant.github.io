@@ -580,9 +580,9 @@
     }
 
     let html = "";
-    html += buildParamCard("PSA", "Prostate-specific antigen — a blood marker", hasPSA ? psa : null, psaData, (v) => v.toFixed(2), "PSA", "ng/ml");
+    html += buildParamCard("PSA", "Prostate-specific antigen", hasPSA ? psa : null, psaData, (v) => v.toFixed(2), "PSA", "ng/ml");
     html += buildParamCard("Prostate volume", "Whole-gland size, from MRI segmentation", hasPV ? pv : null, pvData, (v) => v.toFixed(1), "PV", "ml");
-    html += buildParamCard("PSA density", "PSA ÷ prostate volume — adjusts PSA for gland size", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
+    html += buildParamCard("PSA density", "PSA ÷ prostate volume", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
 
     resultsBody.innerHTML = html || '<p class="muted-msg">Enter patient values to see reference ranges</p>';
   }
