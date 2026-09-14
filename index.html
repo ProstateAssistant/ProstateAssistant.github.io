@@ -17,14 +17,33 @@
 
   body {
     min-height: 100%;
-    background: #000;
-    color: #e8e4e0;
+    background: #ffffff;
+    color: #17181a;
     font-family: 'Courier Prime', monospace;
     line-height: 1.65;
     padding: 56px 24px 96px;
   }
 
   main { max-width: 46rem; margin: 0 auto; }
+
+  /* ---- ascii distribution ---- */
+
+  .dist {
+    font-size: 9px;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    overflow-x: auto;
+    margin-bottom: 4px;
+  }
+  .dist .tail { color: #1f7a4d; }
+  .dist .mid { color: #c4453c; }
+
+  .dist-caption {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: #8a8d92;
+    margin-bottom: 40px;
+  }
 
   h1 {
     font-size: 15px;
@@ -33,7 +52,7 @@
     margin-bottom: 12px;
   }
 
-  .lede { max-width: 34rem; margin-bottom: 44px; color: #b9b2ac; }
+  .lede { max-width: 34rem; margin-bottom: 44px; color: #55585e; }
 
   /* ---- inputs ---- */
 
@@ -45,41 +64,42 @@
 
   label { display: block; }
 
-  .axis { display: block; font-size: 13px; color: #b9b2ac; margin-bottom: 8px; }
+  .axis { display: block; font-size: 13px; color: #55585e; margin-bottom: 8px; }
 
   input[type="number"] {
     width: 100%;
     background: transparent;
     border: none;
-    border-bottom: 1px solid #55504c;
-    color: #e8e4e0;
+    border-bottom: 1px solid #d8d9db;
+    color: #17181a;
     font: inherit;
     font-size: 20px;
     padding: 6px 0;
     border-radius: 0;
+    transition: border-color 0.15s ease;
   }
   input[type="number"]:focus {
     outline: none;
-    border-bottom-color: #f9c1ce;
+    border-bottom-color: #1f7a4d;
   }
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type="number"] { -moz-appearance: textfield; }
-  input::placeholder { color: #55504c; }
+  input::placeholder { color: #c3c4c7; }
 
   /* ---- results ---- */
 
   .result-section {
     margin-top: 52px;
     padding-top: 28px;
-    border-top: 1px solid #2a2724;
+    border-top: 1px solid #e7e7e8;
   }
 
   h2 {
     font-size: 13px;
     font-weight: 400;
     letter-spacing: 0.18em;
-    color: #8e8781;
+    color: #8a8d92;
     margin-bottom: 20px;
   }
 
@@ -95,12 +115,12 @@
   th, td {
     text-align: left;
     padding: 10px 14px 10px 0;
-    border-bottom: 1px solid #2a2724;
+    border-bottom: 1px solid #e7e7e8;
   }
 
   th {
     font-weight: 400;
-    color: #8e8781;
+    color: #8a8d92;
     letter-spacing: 0.08em;
     font-size: 11px;
     text-transform: uppercase;
@@ -110,27 +130,27 @@
 
   tbody tr:last-child td { border-bottom: none; }
 
-  .status-normal { color: #8fd19e; }
-  .status-high { color: #f37f94; }
+  .status-normal { color: #1f7a4d; }
+  .status-high { color: #c4453c; }
 
-  .muted-row td { text-align: center; color: #8e8781; }
+  .muted-row td { text-align: center; color: #8a8d92; }
 
   /* ---- notes ---- */
 
-  .notes { margin-top: 48px; max-width: 34rem; font-size: 14px; color: #8e8781; }
+  .notes { margin-top: 48px; max-width: 34rem; font-size: 14px; color: #6b6e73; }
   .notes p + p { margin-top: 16px; }
 
   footer { margin-top: 64px; }
 
   a {
-    color: #b9b2ac;
+    color: #55585e;
     text-decoration: none;
-    border-bottom: 1px solid #55504c;
+    border-bottom: 1px solid #d8d9db;
     padding-bottom: 2px;
     font-size: 13px;
     letter-spacing: 0.18em;
   }
-  a:hover, a:focus-visible { color: #f9c1ce; border-bottom-color: #f9c1ce; }
+  a:hover, a:focus-visible { color: #1f7a4d; border-bottom-color: #1f7a4d; }
 
   @media (max-width: 560px) {
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -140,6 +160,16 @@
 <body>
 
 <main>
+  <pre class="dist" aria-hidden="true">
+<span class="tail">  </span><span class="mid">                           ##############                           </span><span class="tail">  </span>
+<span class="tail">  </span><span class="mid">                     ##########################                     </span><span class="tail">  </span>
+<span class="tail">  </span><span class="mid">                ####################################                </span><span class="tail">  </span>
+<span class="tail">  </span><span class="mid">            ############################################            </span><span class="tail">  </span>
+<span class="tail">  </span><span class="mid">      ########################################################      </span><span class="tail">  </span>
+<span class="tail">##</span><span class="mid">####################################################################</span><span class="tail">##</span>
+  </pre>
+  <p class="dist-caption">~95% reference interval</p>
+
   <h1>PROSTATE MRI REFERENCE CALCULATOR</h1>
 
   <p class="lede">
