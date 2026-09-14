@@ -29,14 +29,25 @@
   /* ---- ascii distribution ---- */
 
   .dist {
-    font-size: 9px;
-    line-height: 1.1;
-    letter-spacing: 1px;
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: 0.5px;
     overflow-x: auto;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
-  .dist .tail { color: #1f7a4d; }
-  .dist .mid { color: #c4453c; }
+  .dist .curve-row { display: block; }
+  .dist .axis-row { display: block; color: #b7b9bd; }
+
+  /* retro Apple rainbow (1977 six-stripe logo) across the normal range */
+  .dist .ap-green  { color: #61bb46; }
+  .dist .ap-yellow { color: #fdb827; }
+  .dist .ap-orange { color: #f5821f; }
+  .dist .ap-red    { color: #e03a3e; }
+  .dist .ap-purple { color: #963d97; }
+  .dist .ap-blue   { color: #009ddc; }
+
+  /* only the >95th-percentile tail is called out */
+  .dist .tail { color: #c4453c; font-weight: 700; }
 
   .dist-caption {
     font-size: 11px;
@@ -44,6 +55,7 @@
     color: #8a8d92;
     margin-bottom: 40px;
   }
+  .dist-caption .tail { color: #c4453c; }
 
   h1 {
     font-size: 15px;
@@ -160,15 +172,10 @@
 <body>
 
 <main>
-  <pre class="dist" aria-hidden="true">
-<span class="tail">  </span><span class="mid">                           ##############                           </span><span class="tail">  </span>
-<span class="tail">  </span><span class="mid">                     ##########################                     </span><span class="tail">  </span>
-<span class="tail">  </span><span class="mid">                ####################################                </span><span class="tail">  </span>
-<span class="tail">  </span><span class="mid">            ############################################            </span><span class="tail">  </span>
-<span class="tail">  </span><span class="mid">      ########################################################      </span><span class="tail">  </span>
-<span class="tail">##</span><span class="mid">####################################################################</span><span class="tail">##</span>
-  </pre>
-  <p class="dist-caption">~95% reference interval</p>
+  <pre class="dist" aria-hidden="true"><span class="curve-row"><span class="ap-green">▁▁▁▁▂▂▂▂▂▃▃▃</span><span class="ap-yellow">▃▄▄▄▄▅▅▅▅▆▆</span><span class="ap-orange">▆▆▇▇▇▇▇████</span><span class="ap-red">████████▇▇▇▇</span><span class="ap-purple">▇▆▆▆▆▅▅▅▅▄▄</span><span class="ap-blue">▄▄▃▃▃▃▂▂▂▂▂</span><span class="tail">▁▁▁▁</span></span>
+<span class="axis-row">    │             │                 │                │             │    </span>
+<span class="axis-row">    5            25                50               75            95</span></pre>
+  <p class="dist-caption">population percentile — <span class="tail">&gt;95th highlighted</span></p>
 
   <h1>PROSTATE MRI REFERENCE CALCULATOR</h1>
 
