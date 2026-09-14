@@ -136,19 +136,24 @@
 
   .param-head {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 8px 14px;
-    margin-bottom: 18px;
+    gap: 10px 20px;
+    margin-bottom: 20px;
+    text-align: left;
   }
-  .param-name { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #55585e; }
-  .param-value { font-size: 22px; font-variant-numeric: tabular-nums; margin-right: auto; margin-left: 10px; }
+  .param-title { display: flex; flex-direction: column; gap: 4px; }
+  .param-name { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #17181a; }
+  .param-desc { font-size: 12px; color: #8a8d92; }
+  .param-figure { display: flex; align-items: center; gap: 10px; }
+  .param-value { font-size: 22px; font-variant-numeric: tabular-nums; }
   .param-badge {
     font-size: 11px;
     letter-spacing: 0.06em;
     padding: 3px 10px;
     border-radius: 999px;
+    white-space: nowrap;
   }
   .param-badge.status-normal { background: #eaf6ef; }
   .param-badge.status-high { background: #fbecea; }
@@ -510,14 +515,14 @@
         <div class="basis-row">
           <div class="basis-label">
             <span>${label}</span>
-            <span class="basis-nums">median ${median !== undefined && median !== null ? formatValue(median) : "–"} · 95th ${p95 !== undefined && p95 !== null ? formatValue(p95) : "–"}</span>
+            <span class="basis-nums">median ${median !== undefined && median !== null ? formatValue(median) : "–"} · 95th pct. ${p95 !== undefined && p95 !== null ? formatValue(p95) : "–"}</span>
           </div>
           ${trackHTML}
         </div>
       `;
     }
 
-    function buildParamCard(parameter, patientValue, data, formatValue, parameterKey, unit) {
+    function buildParamCard(parameter, description, patientValue, data, formatValue, parameterKey, unit) {
       if (patientValue === null || patientValue === undefined || isNaN(patientValue)) return "";
 
       let basisHTML = "";
@@ -560,9 +565,14 @@
       return `
         <div class="param-card">
           <div class="param-head">
-            <span class="param-name">${parameter}</span>
-            <span class="param-value">${formatValue(patientValue)}${unit ? " " + unit : ""}</span>
-            <span class="param-badge ${statusClass}">${statusText}</span>
+            <div class="param-title">
+              <span class="param-name">${parameter}</span>
+              <span class="param-desc">${description}</span>
+            </div>
+            <div class="param-figure">
+              <span class="param-value">${formatValue(patientValue)}${unit ? " " + unit : ""}</span>
+              <span class="param-badge ${statusClass}">${statusText}</span>
+            </div>
           </div>
           ${basisHTML}
         </div>
@@ -570,9 +580,9 @@
     }
 
     let html = "";
-    html += buildParamCard("PSA", hasPSA ? psa : null, psaData, (v) => v.toFixed(2), "PSA", "ng/ml");
-    html += buildParamCard("Prostate volume", hasPV ? pv : null, pvData, (v) => v.toFixed(1), "PV", "ml");
-    html += buildParamCard("PSA density", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
+    html += buildParamCard("PSA", "Prostate-specific antigen — a blood marker", hasPSA ? psa : null, psaData, (v) => v.toFixed(2), "PSA", "ng/ml");
+    html += buildParamCard("Prostate volume", "Whole-gland size, from MRI segmentation", hasPV ? pv : null, pvData, (v) => v.toFixed(1), "PV", "ml");
+    html += buildParamCard("PSA density", "PSA ÷ prostate volume — adjusts PSA for gland size", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
 
     resultsBody.innerHTML = html || '<p class="muted-msg">Enter patient values to see reference ranges</p>';
   }
