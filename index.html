@@ -26,36 +26,29 @@
 
   main { max-width: 46rem; margin: 0 auto; }
 
-  /* ---- ascii distribution ---- */
+  /* ---- ascii mri ---- */
 
-  .dist {
-    font-size: 13px;
-    line-height: 1.35;
-    letter-spacing: 0.5px;
+  .mri {
+    font-size: 9px;
+    line-height: 1.05;
+    letter-spacing: 1px;
     overflow-x: auto;
-    margin-bottom: 10px;
   }
-  .dist .curve-row { display: block; }
-  .dist .axis-row { display: block; color: #b7b9bd; }
 
-  /* retro Apple rainbow (1977 six-stripe logo) across the normal range */
-  .dist .ap-green  { color: #61bb46; }
-  .dist .ap-yellow { color: #fdb827; }
-  .dist .ap-orange { color: #f5821f; }
-  .dist .ap-red    { color: #e03a3e; }
-  .dist .ap-purple { color: #963d97; }
-  .dist .ap-blue   { color: #009ddc; }
+  /* retro Apple rainbow (1977 six-stripe logo) */
+  .ap-green  { color: #61bb46; }
+  .ap-yellow { color: #fdb827; }
+  .ap-orange { color: #f5821f; }
+  .ap-red    { color: #e03a3e; }
+  .ap-purple { color: #963d97; }
+  .ap-blue   { color: #009ddc; }
 
-  /* only the >95th-percentile tail is called out */
-  .dist .tail { color: #c4453c; font-weight: 700; }
-
-  .dist-caption {
+  .mri-caption {
     font-size: 11px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: #8a8d92;
     margin-bottom: 40px;
   }
-  .dist-caption .tail { color: #c4453c; }
 
   h1 {
     font-size: 15px;
@@ -74,9 +67,20 @@
     gap: 22px 18px;
   }
 
-  label { display: block; }
+  label {
+    display: block;
+    padding: 10px 12px;
+    margin: -10px -12px;
+    border-radius: 10px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  label:focus-within {
+    background: #f1f8f4;
+    box-shadow: 0 0 0 1px #cfe8db;
+  }
+  label:focus-within .axis { color: #1f7a4d; }
 
-  .axis { display: block; font-size: 13px; color: #55585e; margin-bottom: 8px; }
+  .axis { display: block; font-size: 13px; color: #55585e; margin-bottom: 8px; transition: color 0.15s ease; }
 
   input[type="number"] {
     width: 100%;
@@ -112,40 +116,105 @@
     font-weight: 400;
     letter-spacing: 0.18em;
     color: #8a8d92;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
-
-  .table-wrap { overflow-x: auto; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
-  th, td {
-    text-align: left;
-    padding: 10px 14px 10px 0;
-    border-bottom: 1px solid #e7e7e8;
-  }
-
-  th {
-    font-weight: 400;
-    color: #8a8d92;
-    letter-spacing: 0.08em;
-    font-size: 11px;
-    text-transform: uppercase;
-  }
-
-  td { font-variant-numeric: tabular-nums; }
-
-  tbody tr:last-child td { border-bottom: none; }
 
   .status-normal { color: #1f7a4d; }
   .status-high { color: #c4453c; }
 
-  .muted-row td { text-align: center; color: #8a8d92; }
+  .muted-msg { text-align: center; color: #8a8d92; font-size: 13px; padding: 12px 0; }
+
+  /* ---- parameter cards ---- */
+
+  .param-card {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #e7e7e8;
+  }
+  .param-card:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+  .param-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-bottom: 18px;
+  }
+  .param-name { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #55585e; }
+  .param-value { font-size: 22px; font-variant-numeric: tabular-nums; margin-right: auto; margin-left: 10px; }
+  .param-badge {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .param-badge.status-normal { background: #eaf6ef; }
+  .param-badge.status-high { background: #fbecea; }
+
+  .basis-row { margin-bottom: 20px; }
+  .basis-row:last-child { margin-bottom: 0; }
+
+  .basis-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+    color: #8a8d92;
+    margin-bottom: 9px;
+  }
+  .basis-label .basis-nums { color: #b7b9bd; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .ptrack {
+    position: relative;
+    height: 6px;
+    border-radius: 3px;
+    opacity: 0.9;
+    background: linear-gradient(to right,
+      #61bb46 0%, #61bb46 15.83%,
+      #fdb827 15.83%, #fdb827 31.67%,
+      #f5821f 31.67%, #f5821f 47.5%,
+      #e03a3e 47.5%, #e03a3e 63.33%,
+      #963d97 63.33%, #963d97 79.17%,
+      #009ddc 79.17%, #009ddc 95%,
+      #c4453c 95%, #c4453c 100%);
+  }
+  .ptrack.two-point {
+    background: linear-gradient(to right, #61bb46 0%, #009ddc 100%);
+  }
+
+  .pmarker {
+    position: absolute;
+    top: 50%;
+    width: 2px;
+    height: 16px;
+    background: #17181a;
+    transform: translate(-50%, -50%);
+    border-radius: 1px;
+  }
+  .pmarker.status-high { background: #c4453c; }
+  .pmarker .plabel {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    white-space: nowrap;
+    color: #17181a;
+  }
+  .pmarker.status-high .plabel { color: #c4453c; }
+
+  .paxis {
+    position: relative;
+    height: 14px;
+    margin-top: 5px;
+  }
+  .paxis .ptick {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: #c3c4c7;
+  }
 
   /* ---- notes ---- */
 
@@ -172,10 +241,22 @@
 <body>
 
 <main>
-  <pre class="dist" aria-hidden="true"><span class="curve-row"><span class="ap-green">▁▁▁▁▂▂▂▂▂▃▃▃</span><span class="ap-yellow">▃▄▄▄▄▅▅▅▅▆▆</span><span class="ap-orange">▆▆▇▇▇▇▇████</span><span class="ap-red">████████▇▇▇▇</span><span class="ap-purple">▇▆▆▆▆▅▅▅▅▄▄</span><span class="ap-blue">▄▄▃▃▃▃▂▂▂▂▂</span><span class="tail">▁▁▁▁</span></span>
-<span class="axis-row">    │             │                 │                │             │    </span>
-<span class="axis-row">    5            25                50               75            95</span></pre>
-  <p class="dist-caption">population percentile — <span class="tail">&gt;95th highlighted</span></p>
+  <pre class="mri" aria-hidden="true">
+                                            
+          <span class="ap-blue">########################</span>          
+      <span class="ap-blue">#####</span><span class="ap-purple">######################</span><span class="ap-blue">#####</span>      
+   <span class="ap-blue">#####</span><span class="ap-purple">#####</span><span class="ap-red">##################</span><span class="ap-purple">#####</span><span class="ap-blue">#####</span>   
+  <span class="ap-blue">####</span><span class="ap-purple">####</span><span class="ap-red">####</span><span class="ap-orange">################</span><span class="ap-red">####</span><span class="ap-purple">####</span><span class="ap-blue">####</span>  
+ <span class="ap-blue">###</span><span class="ap-purple">####</span><span class="ap-red">####</span><span class="ap-orange">####</span><span class="ap-yellow">############</span><span class="ap-orange">####</span><span class="ap-red">####</span><span class="ap-purple">####</span><span class="ap-blue">###</span> 
+<span class="ap-blue">####</span><span class="ap-purple">####</span><span class="ap-red">###</span><span class="ap-orange">####</span><span class="ap-yellow">###</span><span class="ap-green">########</span><span class="ap-yellow">###</span><span class="ap-orange">####</span><span class="ap-red">###</span><span class="ap-purple">####</span><span class="ap-blue">####</span>
+ <span class="ap-blue">###</span><span class="ap-purple">####</span><span class="ap-red">####</span><span class="ap-orange">####</span><span class="ap-yellow">############</span><span class="ap-orange">####</span><span class="ap-red">####</span><span class="ap-purple">####</span><span class="ap-blue">###</span> 
+  <span class="ap-blue">####</span><span class="ap-purple">####</span><span class="ap-red">####</span><span class="ap-orange">################</span><span class="ap-red">####</span><span class="ap-purple">####</span><span class="ap-blue">####</span>  
+   <span class="ap-blue">#####</span><span class="ap-purple">#####</span><span class="ap-red">##################</span><span class="ap-purple">#####</span><span class="ap-blue">#####</span>   
+      <span class="ap-blue">#####</span><span class="ap-purple">######################</span><span class="ap-blue">#####</span>      
+          <span class="ap-blue">########################</span>          
+                                            
+  </pre>
+  <p class="mri-caption">NORMAL PROSTATE MRI — REFERENCE</p>
 
   <h1>PROSTATE MRI REFERENCE CALCULATOR</h1>
 
@@ -210,22 +291,8 @@
 
   <div class="result-section">
     <h2>REFERENCE RANGES</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Based on</th>
-            <th>Patient</th>
-            <th>Median</th>
-            <th>95th pct.</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="resultsBody">
-          <tr class="muted-row"><td colspan="6">Loading data…</td></tr>
-        </tbody>
-      </table>
+    <div id="resultsBody">
+      <p class="muted-msg">Loading data…</p>
     </div>
   </div>
 
@@ -309,7 +376,7 @@
   }).catch(err => {
     console.error("Error loading data:", err);
     if (resultsBody) {
-      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Error loading data files.</td></tr>";
+      resultsBody.innerHTML = '<p class="muted-msg">Error loading data files.</p>';
     }
   });
 
@@ -330,6 +397,65 @@
     );
   }
 
+  const PCTS = ["5", "10", "25", "50", "75", "90", "95", "99", "99.9"];
+  const AXIS_PCTS = [5, 25, 50, 75, 95];
+
+  function refPoints(ref) {
+    return PCTS
+      .map(p => ({ p: parseFloat(p), v: ref[p] }))
+      .filter(o => o.v !== null && o.v !== undefined && !isNaN(o.v))
+      .sort((a, b) => a.v - b.v);
+  }
+
+  // Where `value` falls on a 0-100 percentile axis, given known
+  // (percentile, value) points from the reference distribution.
+  function percentileRank(points, value) {
+    if (points.length < 2) return null;
+    const first = points[0], last = points[points.length - 1];
+
+    if (value <= first.v) {
+      if (first.v <= 0) return first.p;
+      return Math.max(0, first.p * (value / first.v));
+    }
+    if (value >= last.v) {
+      const prev = points[points.length - 2];
+      if (last.v === prev.v) return last.p;
+      const slope = (last.p - prev.p) / (last.v - prev.v);
+      return Math.min(100, Math.max(last.p, last.p + slope * (value - last.v)));
+    }
+    for (let i = 0; i < points.length - 1; i++) {
+      const a = points[i], b = points[i + 1];
+      if (value >= a.v && value <= b.v) {
+        if (b.v === a.v) return a.p;
+        const t = (value - a.v) / (b.v - a.v);
+        return a.p + t * (b.p - a.p);
+      }
+    }
+    return null;
+  }
+
+  function buildTrack(ref, patientValue, isHigh, patientLabel) {
+    const points = refPoints(ref);
+    const rank = percentileRank(points, patientValue);
+    if (rank === null) return "";
+
+    const twoPoint = points.length <= 2 ? " two-point" : "";
+    const pct = Math.min(100, Math.max(0, rank));
+    const markerClass = isHigh ? " status-high" : "";
+
+    const ticks = AXIS_PCTS.filter(p => points.some(pt => pt.p === p));
+    const axisTicks = (ticks.length ? ticks : points.map(pt => pt.p))
+      .map(p => `<span class="ptick" style="left:${p}%">${p}</span>`)
+      .join("");
+
+    return `
+      <div class="ptrack${twoPoint}">
+        <div class="pmarker${markerClass}" style="left:${pct}%"><span class="plabel">${patientLabel}</span></div>
+      </div>
+      <div class="paxis">${axisTicks}</div>
+    `;
+  }
+
   function getStatusClass(patientValue, p95) {
     if (!patientValue || isNaN(patientValue) || !p95 || isNaN(p95)) return "";
     return patientValue > p95 ? "status-high" : "status-normal";
@@ -342,7 +468,7 @@
 
   function updateResults() {
     if (psaData.length === 0 || pvData.length === 0 || psadData.length === 0) {
-      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Loading data…</td></tr>";
+      resultsBody.innerHTML = '<p class="muted-msg">Loading data…</p>';
       return;
     }
 
@@ -370,90 +496,81 @@
       return (mvGrid[parameterKey] && mvGrid[parameterKey][key]) || null;
     }
 
-    const rows = [];
-
-    function addReferenceRows(parameter, patientValue, data, formatValue, parameterKey) {
-      if (patientValue === null || patientValue === undefined) return;
-
-      if (hasAge) {
-        const ref = findNearest(data, "Age (years)", "Age", age);
-        if (ref) {
-          const p95 = ref["95"];
-          rows.push({
-            parameter, basedOn: `Age (${age} years)`,
-            patientValue: formatValue(patientValue),
-            median: ref["50"] ? formatValue(ref["50"]) : "–",
-            p95: p95 ? formatValue(p95) : "–",
-            statusClass: getStatusClass(patientValue, p95),
-            statusText: getStatusText(patientValue, p95)
-          });
-        }
-      }
-
-      if (hasBMI) {
-        const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
-        if (ref) {
-          const p95 = ref["95"];
-          rows.push({
-            parameter, basedOn: `BMI (${bmi.toFixed(1)} kg/m²)`,
-            patientValue: formatValue(patientValue),
-            median: ref["50"] ? formatValue(ref["50"]) : "–",
-            p95: p95 ? formatValue(p95) : "–",
-            statusClass: getStatusClass(patientValue, p95),
-            statusText: getStatusText(patientValue, p95)
-          });
-        }
-      }
-
-      if (hasHeight) {
-        const ref = findNearest(data, "Height (cm)", "Height", height);
-        if (ref) {
-          const p95 = ref["95"];
-          rows.push({
-            parameter, basedOn: `Height (${height.toFixed(1)} cm)`,
-            patientValue: formatValue(patientValue),
-            median: ref["50"] ? formatValue(ref["50"]) : "–",
-            p95: p95 ? formatValue(p95) : "–",
-            statusClass: getStatusClass(patientValue, p95),
-            statusText: getStatusText(patientValue, p95)
-          });
-        }
-      }
-
-      if (parameterKey && hasAge && hasBMI && hasHeight) {
-        const ref = mvLookup(parameterKey);
-        if (ref) {
-          const p95 = ref.p95;
-          rows.push({
-            parameter, basedOn: "Age + BMI + Height",
-            patientValue: formatValue(patientValue),
-            median: (ref.p50 !== null && ref.p50 !== undefined) ? formatValue(ref.p50) : "–",
-            p95: (p95 !== null && p95 !== undefined) ? formatValue(p95) : "–",
-            statusClass: getStatusClass(patientValue, p95),
-            statusText: getStatusText(patientValue, p95)
-          });
-        }
-      }
+    function buildBasisRow(label, ref, patientValue, formatValue) {
+      if (!ref) return "";
+      const trackHTML = buildTrack(ref, patientValue, getStatusClass(patientValue, ref["95"]) === "status-high", formatValue(patientValue));
+      if (!trackHTML) return "";
+      const median = ref["50"];
+      const p95 = ref["95"];
+      return `
+        <div class="basis-row">
+          <div class="basis-label">
+            <span>${label}</span>
+            <span class="basis-nums">median ${median !== undefined && median !== null ? formatValue(median) : "–"} · 95th ${p95 !== undefined && p95 !== null ? formatValue(p95) : "–"}</span>
+          </div>
+          ${trackHTML}
+        </div>
+      `;
     }
 
-    if (hasPSA) addReferenceRows("PSA", psa, psaData, (v) => v.toFixed(2), "PSA");
-    if (hasPV) addReferenceRows("Prostate volume", pv, pvData, (v) => v.toFixed(1), "PV");
-    if (psad !== null) addReferenceRows("PSA density", psad, psadData, (v) => v.toFixed(3), "PSAD");
+    function buildParamCard(parameter, patientValue, data, formatValue, parameterKey, unit) {
+      if (patientValue === null || patientValue === undefined || isNaN(patientValue)) return "";
 
-    if (rows.length === 0) {
-      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Enter patient values to see reference ranges</td></tr>";
-    } else {
-      resultsBody.innerHTML = rows.map(row => `
-        <tr>
-          <td>${row.parameter}</td>
-          <td>${row.basedOn}</td>
-          <td class="${row.statusClass}">${row.patientValue}</td>
-          <td>${row.median}</td>
-          <td>${row.p95}</td>
-          <td class="${row.statusClass}">${row.statusText}</td>
-        </tr>
-      `).join("");
+      let basisHTML = "";
+      let overallP95 = null;
+
+      const combinedRaw = parameterKey ? mvLookup(parameterKey) : null;
+      if (combinedRaw) {
+        const combined = { "50": combinedRaw.p50, "95": combinedRaw.p95 };
+        overallP95 = combined["95"];
+        basisHTML += buildBasisRow("Age + BMI + Height", combined, patientValue, formatValue);
+      } else {
+        if (hasAge) {
+          const ref = findNearest(data, "Age (years)", "Age", age);
+          if (ref) {
+            if (overallP95 === null) overallP95 = ref["95"];
+            basisHTML += buildBasisRow(`Age (${age}y)`, ref, patientValue, formatValue);
+          }
+        }
+        if (hasBMI) {
+          const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
+          if (ref) {
+            if (overallP95 === null) overallP95 = ref["95"];
+            basisHTML += buildBasisRow(`BMI (${bmi.toFixed(1)})`, ref, patientValue, formatValue);
+          }
+        }
+        if (hasHeight) {
+          const ref = findNearest(data, "Height (cm)", "Height", height);
+          if (ref) {
+            if (overallP95 === null) overallP95 = ref["95"];
+            basisHTML += buildBasisRow(`Height (${height.toFixed(1)}cm)`, ref, patientValue, formatValue);
+          }
+        }
+      }
+
+      if (!basisHTML) return "";
+
+      const statusClass = getStatusClass(patientValue, overallP95);
+      const statusText = getStatusText(patientValue, overallP95);
+
+      return `
+        <div class="param-card">
+          <div class="param-head">
+            <span class="param-name">${parameter}</span>
+            <span class="param-value">${formatValue(patientValue)}${unit ? " " + unit : ""}</span>
+            <span class="param-badge ${statusClass}">${statusText}</span>
+          </div>
+          ${basisHTML}
+        </div>
+      `;
     }
+
+    let html = "";
+    html += buildParamCard("PSA", hasPSA ? psa : null, psaData, (v) => v.toFixed(2), "PSA", "ng/ml");
+    html += buildParamCard("Prostate volume", hasPV ? pv : null, pvData, (v) => v.toFixed(1), "PV", "ml");
+    html += buildParamCard("PSA density", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
+
+    resultsBody.innerHTML = html || '<p class="muted-msg">Enter patient values to see reference ranges</p>';
   }
 
   if (document.readyState === 'loading') {
