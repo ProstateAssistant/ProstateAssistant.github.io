@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
+<title>PROSTATE MRI REFERENCE CALCULATOR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+        integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
+        crossorigin="anonymous"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { font-size: 16px; }
+
+  body {
+    min-height: 100%;
+    background: #000;
+    color: #e8e4e0;
+    font-family: 'Courier Prime', monospace;
+    line-height: 1.65;
+    padding: 56px 24px 96px;
+  }
+
+  main { max-width: 46rem; margin: 0 auto; }
+
+  h1 {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    margin-bottom: 12px;
+  }
+
+  .lede { max-width: 34rem; margin-bottom: 44px; color: #b9b2ac; }
+
+  /* ---- inputs ---- */
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 18px;
+  }
+
+  label { display: block; }
+
+  .axis { display: block; font-size: 13px; color: #b9b2ac; margin-bottom: 8px; }
+
+  input[type="number"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #55504c;
+    color: #e8e4e0;
+    font: inherit;
+    font-size: 20px;
+    padding: 6px 0;
+    border-radius: 0;
+  }
+  input[type="number"]:focus {
+    outline: none;
+    border-bottom-color: #f9c1ce;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  input::placeholder { color: #55504c; }
+
+  /* ---- results ---- */
+
+  .result-section {
+    margin-top: 52px;
+    padding-top: 28px;
+    border-top: 1px solid #2a2724;
+  }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: #8e8781;
+    margin-bottom: 20px;
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 10px 14px 10px 0;
+    border-bottom: 1px solid #2a2724;
+  }
+
+  th {
+    font-weight: 400;
+    color: #8e8781;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  td { font-variant-numeric: tabular-nums; }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  .status-normal { color: #8fd19e; }
+  .status-high { color: #f37f94; }
+
+  .muted-row td { text-align: center; color: #8e8781; }
+
+  /* ---- notes ---- */
+
+  .notes { margin-top: 48px; max-width: 34rem; font-size: 14px; color: #8e8781; }
+  .notes p + p { margin-top: 16px; }
+
+  footer { margin-top: 64px; }
+
+  a {
+    color: #b9b2ac;
+    text-decoration: none;
+    border-bottom: 1px solid #55504c;
+    padding-bottom: 2px;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+  }
+  a:hover, a:focus-visible { color: #f9c1ce; border-bottom-color: #f9c1ce; }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>PROSTATE MRI REFERENCE CALCULATOR</h1>
+
+  <p class="lede">
+    Age, BMI, and height-adjusted percentile reference ranges for prostate
+    volume, PSA, and PSA density, derived from MRI segmentation-based
+    volumetry in a population-based cohort.
+  </p>
+
+  <div class="grid">
+    <label>
+      <span class="axis">Age (years)</span>
+      <input type="number" id="ageInput" min="18" max="100" step="1" placeholder="—" autocomplete="off">
+    </label>
+    <label>
+      <span class="axis">BMI (kg/m²)</span>
+      <input type="number" id="bmiInput" step="0.1" placeholder="—" autocomplete="off">
+    </label>
+    <label>
+      <span class="axis">Height (cm)</span>
+      <input type="number" id="heightInput" step="0.1" placeholder="—" autocomplete="off">
+    </label>
+    <label>
+      <span class="axis">PSA (ng/ml)</span>
+      <input type="number" id="psaInput" step="0.1" placeholder="—" autocomplete="off">
+    </label>
+    <label>
+      <span class="axis">Prostate volume (ml)</span>
+      <input type="number" id="pvInput" step="0.1" placeholder="—" autocomplete="off">
+    </label>
+  </div>
+
+  <div class="result-section">
+    <h2>REFERENCE RANGES</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Based on</th>
+            <th>Patient</th>
+            <th>Median</th>
+            <th>95th pct.</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody">
+          <tr class="muted-row"><td colspan="6">Loading data…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="notes">
+    <p>
+      Prostate volume is based on whole-gland MRI segmentation, not the
+      ellipsoid formula. A value above the 95th percentile is flagged as a
+      statistical comparison, not a diagnosis. For details, check the paper.
+    </p>
+    <p>
+      This calculator accompanies a study to be published in
+      <em>European Radiology</em>. If used, please cite:
+      <em>(to be published)</em>.
+    </p>
+  </div>
+
+</main>
+
+<script>
+  let ageInput, bmiInput, heightInput, psaInput, pvInput, resultsBody;
+
+  function initDOM() {
+    ageInput = document.getElementById("ageInput");
+    bmiInput = document.getElementById("bmiInput");
+    heightInput = document.getElementById("heightInput");
+    psaInput = document.getElementById("psaInput");
+    pvInput = document.getElementById("pvInput");
+    resultsBody = document.getElementById("resultsBody");
+
+    ["ageInput", "bmiInput", "heightInput", "psaInput", "pvInput"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateResults);
+    });
+  }
+
+  async function loadExcel(path) {
+    const arrayBuffer = await fetch(path).then(r => r.arrayBuffer());
+    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(worksheet);
+
+    return data.map(row => {
+      const result = {};
+      result.predictor = row.Predictor || row['Predictor'];
+      result.value = parseFloat(row.Value || row['Value']);
+
+      ['5', '10', '25', '50', '75', '90', '95', '99', '99.9'].forEach(p => {
+        const val = row[p] || row[p.toString()];
+        result[p] = (val !== undefined && val !== null && val !== '') ? parseFloat(val) : null;
+      });
+
+      if (result.predictor === 'Age (years)') {
+        result.Age = result.value;
+      } else if (result.predictor === 'BMI (kg/m²)') {
+        result.BMI = result.value;
+      } else if (result.predictor === 'Height (cm)') {
+        result.Height = result.value;
+      }
+
+      return result;
+    });
+  }
+
+  let psaData = [];
+  let pvData = [];
+  let psadData = [];
+
+  // Multivariable (Age + BMI + Height jointly) precomputed grid.
+  // Optional: if it fails to load, the univariate rows still work.
+  let mvGrid = null;
+
+  Promise.all([
+    loadExcel("data/Supplementary_Table2_PSA.xlsx"),
+    loadExcel("data/Supplementary_Table1_PV.xlsx"),
+    loadExcel("data/Supplementary_Table3_PSAD.xlsx")
+  ]).then(([psa, pv, psad]) => {
+    psaData = psa;
+    pvData = pv;
+    psadData = psad;
+    updateResults();
+  }).catch(err => {
+    console.error("Error loading data:", err);
+    if (resultsBody) {
+      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Error loading data files.</td></tr>";
+    }
+  });
+
+  fetch("data/mv_grid.json")
+    .then(r => r.json())
+    .then(j => { mvGrid = j; updateResults(); })
+    .catch(err => console.error("Error loading multivariable grid:", err));
+
+  function findNearest(data, predictorName, key, value) {
+    if (!data || data.length === 0) return null;
+    const filtered = data.filter(row => {
+      const rowPredictor = row.predictor || row.Predictor;
+      return rowPredictor === predictorName && row[key] !== null && !isNaN(row[key]);
+    });
+    if (filtered.length === 0) return null;
+    return filtered.reduce((a, b) =>
+      Math.abs(b[key] - value) < Math.abs(a[key] - value) ? b : a
+    );
+  }
+
+  function getStatusClass(patientValue, p95) {
+    if (!patientValue || isNaN(patientValue) || !p95 || isNaN(p95)) return "";
+    return patientValue > p95 ? "status-high" : "status-normal";
+  }
+
+  function getStatusText(patientValue, p95) {
+    if (!patientValue || isNaN(patientValue) || !p95 || isNaN(p95)) return "–";
+    return patientValue > p95 ? "Above 95th" : "Normal";
+  }
+
+  function updateResults() {
+    if (psaData.length === 0 || pvData.length === 0 || psadData.length === 0) {
+      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Loading data…</td></tr>";
+      return;
+    }
+
+    const age = parseFloat(ageInput.value);
+    const bmi = parseFloat(bmiInput.value);
+    const height = parseFloat(heightInput.value);
+    const psa = parseFloat(psaInput.value);
+    const pv = parseFloat(pvInput.value);
+
+    const hasAge = age && !isNaN(age);
+    const hasBMI = bmi && !isNaN(bmi);
+    const hasHeight = height && !isNaN(height);
+    const hasPSA = psa && !isNaN(psa);
+    const hasPV = pv && !isNaN(pv);
+
+    const psad = (hasPSA && hasPV) ? (psa / pv) : null;
+
+    function mvLookup(parameterKey) {
+      if (!mvGrid || !mvGrid.meta || !hasAge || !hasBMI || !hasHeight) return null;
+      const clamp = (v, r) => Math.min(r[1], Math.max(r[0], v));
+      const a = Math.round(clamp(age, mvGrid.meta.age));
+      const b = Math.round(clamp(bmi, mvGrid.meta.bmi));
+      const h = Math.round(clamp(height, mvGrid.meta.height) / 2) * 2;
+      const key = `${a}|${b}|${h}`;
+      return (mvGrid[parameterKey] && mvGrid[parameterKey][key]) || null;
+    }
+
+    const rows = [];
+
+    function addReferenceRows(parameter, patientValue, data, formatValue, parameterKey) {
+      if (patientValue === null || patientValue === undefined) return;
+
+      if (hasAge) {
+        const ref = findNearest(data, "Age (years)", "Age", age);
+        if (ref) {
+          const p95 = ref["95"];
+          rows.push({
+            parameter, basedOn: `Age (${age} years)`,
+            patientValue: formatValue(patientValue),
+            median: ref["50"] ? formatValue(ref["50"]) : "–",
+            p95: p95 ? formatValue(p95) : "–",
+            statusClass: getStatusClass(patientValue, p95),
+            statusText: getStatusText(patientValue, p95)
+          });
+        }
+      }
+
+      if (hasBMI) {
+        const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
+        if (ref) {
+          const p95 = ref["95"];
+          rows.push({
+            parameter, basedOn: `BMI (${bmi.toFixed(1)} kg/m²)`,
+            patientValue: formatValue(patientValue),
+            median: ref["50"] ? formatValue(ref["50"]) : "–",
+            p95: p95 ? formatValue(p95) : "–",
+            statusClass: getStatusClass(patientValue, p95),
+            statusText: getStatusText(patientValue, p95)
+          });
+        }
+      }
+
+      if (hasHeight) {
+        const ref = findNearest(data, "Height (cm)", "Height", height);
+        if (ref) {
+          const p95 = ref["95"];
+          rows.push({
+            parameter, basedOn: `Height (${height.toFixed(1)} cm)`,
+            patientValue: formatValue(patientValue),
+            median: ref["50"] ? formatValue(ref["50"]) : "–",
+            p95: p95 ? formatValue(p95) : "–",
+            statusClass: getStatusClass(patientValue, p95),
+            statusText: getStatusText(patientValue, p95)
+          });
+        }
+      }
+
+      if (parameterKey && hasAge && hasBMI && hasHeight) {
+        const ref = mvLookup(parameterKey);
+        if (ref) {
+          const p95 = ref.p95;
+          rows.push({
+            parameter, basedOn: "Age + BMI + Height",
+            patientValue: formatValue(patientValue),
+            median: (ref.p50 !== null && ref.p50 !== undefined) ? formatValue(ref.p50) : "–",
+            p95: (p95 !== null && p95 !== undefined) ? formatValue(p95) : "–",
+            statusClass: getStatusClass(patientValue, p95),
+            statusText: getStatusText(patientValue, p95)
+          });
+        }
+      }
+    }
+
+    if (hasPSA) addReferenceRows("PSA", psa, psaData, (v) => v.toFixed(2), "PSA");
+    if (hasPV) addReferenceRows("Prostate volume", pv, pvData, (v) => v.toFixed(1), "PV");
+    if (psad !== null) addReferenceRows("PSA density", psad, psadData, (v) => v.toFixed(3), "PSAD");
+
+    if (rows.length === 0) {
+      resultsBody.innerHTML = "<tr class='muted-row'><td colspan='6'>Enter patient values to see reference ranges</td></tr>";
+    } else {
+      resultsBody.innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.parameter}</td>
+          <td>${row.basedOn}</td>
+          <td class="${row.statusClass}">${row.patientValue}</td>
+          <td>${row.median}</td>
+          <td>${row.p95}</td>
+          <td class="${row.statusClass}">${row.statusText}</td>
+        </tr>
+      `).join("");
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDOM);
+  } else {
+    initDOM();
+  }
+</script>
+</body>
+</html>
