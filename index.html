@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Age, BMI, and height-adjusted percentile reference ranges for MRI-derived prostate volume, PSA, and PSA density, from a population-based German cohort (Study of Health in Pomerania) free of prostate cancer, BPH, or LUTS.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
-<title>PROSTATE MRI REFERENCE CALCULATOR</title>
+<title>PROSTATE - MRI REFERENCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
         integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
         crossorigin="anonymous"></script>
@@ -13,7 +14,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-  html { font-size: 16px; }
+  html { font-size: 18px; }
 
   body {
     min-height: 100%;
@@ -57,7 +58,7 @@
     margin-bottom: 12px;
   }
 
-  .lede { max-width: 34rem; margin: 0 auto 44px; color: #55585e; }
+  .lede { max-width: 34rem; margin: 0 auto 44px; color: #55585e; font-size: 0.85rem; }
 
   /* ---- inputs ---- */
 
@@ -120,8 +121,8 @@
     margin-bottom: 24px;
   }
 
-  .status-normal { color: #1f7a4d; }
-  .status-high { color: #c4453c; }
+  .status-normal { color: #0a6c8f; }
+  .status-high { color: #b35c12; }
 
   .muted-msg { text-align: center; color: #8a8d92; font-size: 13px; padding: 12px 0; }
 
@@ -155,8 +156,8 @@
     border-radius: 999px;
     white-space: nowrap;
   }
-  .param-badge.status-normal { background: #eaf6ef; }
-  .param-badge.status-high { background: #fbecea; }
+  .param-badge.status-normal { background: #e6f4fa; }
+  .param-badge.status-high { background: #fcecdf; }
 
   .basis-row { margin-bottom: 20px; }
   .basis-row:last-child { margin-bottom: 0; }
@@ -164,29 +165,31 @@
   .basis-label {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
     font-size: 12px;
     color: #8a8d92;
     margin-bottom: 22px;
   }
-  .basis-label .basis-nums { color: #b7b9bd; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .basis-nums {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    color: #55585e;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .basis-nums .basis-stat-label { color: #8a8d92; margin-right: 5px; }
+  .basis-nums b { font-weight: 700; color: #17181a; }
 
   .ptrack {
     position: relative;
     height: 6px;
     border-radius: 3px;
     opacity: 0.9;
-    background: linear-gradient(to right,
-      #61bb46 0%, #61bb46 15.83%,
-      #fdb827 15.83%, #fdb827 31.67%,
-      #f5821f 31.67%, #f5821f 47.5%,
-      #e03a3e 47.5%, #e03a3e 63.33%,
-      #963d97 63.33%, #963d97 79.17%,
-      #009ddc 79.17%, #009ddc 95%,
-      #c4453c 95%, #c4453c 100%);
-  }
-  .ptrack.two-point {
-    background: linear-gradient(to right, #61bb46 0%, #009ddc 100%);
+    background: linear-gradient(to right, #009ddc 0%, #009ddc 80%, #f5821f 95%, #f5821f 100%);
   }
 
   .pmarker {
@@ -198,7 +201,7 @@
     transform: translate(-50%, -50%);
     border-radius: 1px;
   }
-  .pmarker.status-high { background: #c4453c; }
+  .pmarker.status-high { background: #b35c12; }
   .pmarker .plabel {
     position: absolute;
     bottom: 24px;
@@ -210,7 +213,7 @@
   }
   .pmarker.align-start .plabel { left: 0; transform: translateX(0); }
   .pmarker.align-end .plabel { left: auto; right: 0; transform: translateX(0); }
-  .pmarker.status-high .plabel { color: #c4453c; }
+  .pmarker.status-high .plabel { color: #b35c12; }
 
   .paxis {
     position: relative;
@@ -222,6 +225,43 @@
     transform: translateX(-50%);
     font-size: 9px;
     color: #c3c4c7;
+  }
+
+  /* ---- reference basis toggle ---- */
+
+  .ref-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #8a8d92;
+    margin-bottom: 14px;
+  }
+
+  .ref-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .ref-btn {
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a8d92;
+    background: transparent;
+    border: 1px solid #d8d9db;
+    border-radius: 999px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .ref-btn:hover { color: #17181a; border-color: #b7b9bd; }
+  .ref-btn:focus-visible { outline: none; border-color: #1f7a4d; }
+  .ref-btn.active {
+    color: #1f7a4d;
+    border-color: #1f7a4d;
+    background: #eaf6ef;
   }
 
   /* ---- notes ---- */
@@ -264,14 +304,16 @@
           <span class="ap-blue">########################</span>          
                                             
   </pre>
-  <p class="mri-caption">NORMAL PROSTATE MRI — REFERENCE</p>
+  <p class="mri-caption">PROSTATE - MRI REFERENCE</p>
 
-  <h1>PROSTATE MRI REFERENCE CALCULATOR</h1>
+  <h1>PROSTATE - MRI REFERENCE</h1>
 
   <p class="lede">
-    Age, BMI, and height-adjusted percentile reference ranges for prostate
-    volume, PSA, and PSA density, derived from MRI segmentation-based
-    volumetry in a population-based cohort.
+    Enter any of age, BMI, and height, plus PSA and/or prostate volume
+    (both gives PSA density), for age-, BMI-, and height-adjusted
+    percentile references from a population-based German cohort (Study of
+    Health in Pomerania) without known diagnosis of prostate cancer, benign
+    prostatic hyperplasia, or lower urinary tract symptoms.
   </p>
 
   <div class="grid">
@@ -299,6 +341,13 @@
 
   <div class="result-section">
     <h2>REFERENCE RANGES</h2>
+    <p class="ref-hint">Choose which reference cohort to compare against:</p>
+    <div class="ref-toggle" role="group" aria-label="Reference basis">
+      <button type="button" class="ref-btn active" data-ref="all">All</button>
+      <button type="button" class="ref-btn" data-ref="age">Age</button>
+      <button type="button" class="ref-btn" data-ref="bmi">BMI</button>
+      <button type="button" class="ref-btn" data-ref="height">Height</button>
+    </div>
     <div id="resultsBody">
       <p class="muted-msg">Loading data…</p>
     </div>
@@ -306,9 +355,19 @@
 
   <div class="notes">
     <p>
-      Prostate volume is based on whole-gland MRI segmentation, not the
-      ellipsoid formula. A value above the 95th percentile is flagged as a
-      statistical comparison, not a diagnosis. For details, check the paper.
+      Prostate volume is based on deep-learning whole-gland MRI segmentation,
+      not the ellipsoid formula. PSA is measured from a blood test. A value
+      above the 95th percentile is flagged as a statistical comparison, not a
+      diagnosis. For details, check the paper.
+    </p>
+    <p>
+      Reference values for PSA, prostate volume, and PSA density are from
+      the original manuscript by Lindholz et al.
+      (<em>link to be added — to be published</em>). The purpose of this
+      calculator is to contextualize an individual patient's parameters
+      against a healthy reference cohort, expressed as a percentile.
+      Modelling is based on GAMLSS (Generalized Additive Models for
+      Location, Scale, and Shape).
     </p>
     <p>
       This calculator accompanies a study to be published in
@@ -320,7 +379,8 @@
 </main>
 
 <script>
-  let ageInput, bmiInput, heightInput, psaInput, pvInput, resultsBody;
+  let ageInput, bmiInput, heightInput, psaInput, pvInput, resultsBody, refButtons;
+  let selectedRef = "all";
 
   function initDOM() {
     ageInput = document.getElementById("ageInput");
@@ -329,9 +389,18 @@
     psaInput = document.getElementById("psaInput");
     pvInput = document.getElementById("pvInput");
     resultsBody = document.getElementById("resultsBody");
+    refButtons = document.querySelectorAll(".ref-btn");
 
     ["ageInput", "bmiInput", "heightInput", "psaInput", "pvInput"].forEach(id => {
       document.getElementById(id).addEventListener("input", updateResults);
+    });
+
+    refButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedRef = btn.dataset.ref;
+        refButtons.forEach(b => b.classList.toggle("active", b === btn));
+        updateResults();
+      });
     });
   }
 
@@ -444,22 +513,28 @@
 
   function buildTrack(ref, patientValue, isHigh, patientLabel) {
     const points = refPoints(ref);
-    const rank = percentileRank(points, patientValue);
-    if (rank === null) return "";
-
-    const twoPoint = points.length <= 2 ? " two-point" : "";
-    const pct = Math.min(100, Math.max(0, rank));
-    const align = pct < 12 ? " align-start" : pct > 88 ? " align-end" : "";
-    const markerClass = (isHigh ? " status-high" : "") + align;
+    if (points.length < 2) return "";
 
     const ticks = AXIS_PCTS.filter(p => points.some(pt => pt.p === p));
     const axisTicks = (ticks.length ? ticks : points.map(pt => pt.p))
       .map(p => `<span class="ptick" style="left:${p}%">${p}</span>`)
       .join("");
 
+    let markerHTML = "";
+    const hasValue = patientValue !== null && patientValue !== undefined && !isNaN(patientValue);
+    if (hasValue) {
+      const rank = percentileRank(points, patientValue);
+      if (rank !== null) {
+        const pct = Math.min(100, Math.max(0, rank));
+        const align = pct < 12 ? " align-start" : pct > 88 ? " align-end" : "";
+        const markerClass = (isHigh ? " status-high" : "") + align;
+        markerHTML = `<div class="pmarker${markerClass}" style="left:${pct}%"><span class="plabel">${patientLabel}</span></div>`;
+      }
+    }
+
     return `
-      <div class="ptrack${twoPoint}">
-        <div class="pmarker${markerClass}" style="left:${pct}%"><span class="plabel">${patientLabel}</span></div>
+      <div class="ptrack">
+        ${markerHTML}
       </div>
       <div class="paxis">${axisTicks}</div>
     `;
@@ -472,7 +547,7 @@
 
   function getStatusText(patientValue, p95) {
     if (!patientValue || isNaN(patientValue) || !p95 || isNaN(p95)) return "–";
-    return patientValue > p95 ? "Above 95th" : "Normal";
+    return patientValue > p95 ? "Above 95th percentile" : "Within range";
   }
 
   function updateResults() {
@@ -507,15 +582,27 @@
 
     function buildBasisRow(label, ref, patientValue, formatValue) {
       if (!ref) return "";
-      const trackHTML = buildTrack(ref, patientValue, getStatusClass(patientValue, ref["95"]) === "status-high", formatValue(patientValue));
+      const hasValue = patientValue !== null && patientValue !== undefined && !isNaN(patientValue);
+      const isHigh = hasValue && getStatusClass(patientValue, ref["95"]) === "status-high";
+      const trackHTML = buildTrack(ref, patientValue, isHigh, hasValue ? formatValue(patientValue) : "");
       if (!trackHTML) return "";
       const median = ref["50"];
+      const p5 = ref["5"];
       const p95 = ref["95"];
+      const medianText = median !== undefined && median !== null ? formatValue(median) : "–";
+      const hasFullRange = p5 !== undefined && p5 !== null && p95 !== undefined && p95 !== null;
+      const rangeLabel = hasFullRange ? "5th–95th" : "95th pct.";
+      const rangeText = hasFullRange
+        ? `${formatValue(p5)}–${formatValue(p95)}`
+        : (p95 !== undefined && p95 !== null ? formatValue(p95) : "–");
       return `
         <div class="basis-row">
           <div class="basis-label">
             <span>${label}</span>
-            <span class="basis-nums">median ${median !== undefined && median !== null ? formatValue(median) : "–"} · 95th pct. ${p95 !== undefined && p95 !== null ? formatValue(p95) : "–"}</span>
+            <span class="basis-nums">
+              <span><span class="basis-stat-label">median</span><b>${medianText}</b></span>
+              <span><span class="basis-stat-label">${rangeLabel}</span><b>${rangeText}</b></span>
+            </span>
           </div>
           ${trackHTML}
         </div>
@@ -523,44 +610,63 @@
     }
 
     function buildParamCard(parameter, description, patientValue, data, formatValue, parameterKey, unit) {
-      if (patientValue === null || patientValue === undefined || isNaN(patientValue)) return "";
+      const hasPatientValue = patientValue !== null && patientValue !== undefined && !isNaN(patientValue);
 
       let basisHTML = "";
       let overallP95 = null;
 
-      const combinedRaw = parameterKey ? mvLookup(parameterKey) : null;
-      if (combinedRaw) {
-        const combined = { "50": combinedRaw.p50, "95": combinedRaw.p95 };
-        overallP95 = combined["95"];
-        basisHTML += buildBasisRow("Age + BMI + Height", combined, patientValue, formatValue);
+      function addAgeRow() {
+        if (!hasAge) return;
+        const ref = findNearest(data, "Age (years)", "Age", age);
+        if (ref) {
+          if (overallP95 === null) overallP95 = ref["95"];
+          basisHTML += buildBasisRow(`Age (${age}y)`, ref, patientValue, formatValue);
+        }
+      }
+      function addBMIRow() {
+        if (!hasBMI) return;
+        const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
+        if (ref) {
+          if (overallP95 === null) overallP95 = ref["95"];
+          basisHTML += buildBasisRow(`BMI (${bmi.toFixed(1)})`, ref, patientValue, formatValue);
+        }
+      }
+      function addHeightRow() {
+        if (!hasHeight) return;
+        const ref = findNearest(data, "Height (cm)", "Height", height);
+        if (ref) {
+          if (overallP95 === null) overallP95 = ref["95"];
+          basisHTML += buildBasisRow(`Height (${height.toFixed(1)}cm)`, ref, patientValue, formatValue);
+        }
+      }
+
+      if (selectedRef === "age") {
+        addAgeRow();
+      } else if (selectedRef === "bmi") {
+        addBMIRow();
+      } else if (selectedRef === "height") {
+        addHeightRow();
       } else {
-        if (hasAge) {
-          const ref = findNearest(data, "Age (years)", "Age", age);
-          if (ref) {
-            if (overallP95 === null) overallP95 = ref["95"];
-            basisHTML += buildBasisRow(`Age (${age}y)`, ref, patientValue, formatValue);
-          }
-        }
-        if (hasBMI) {
-          const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
-          if (ref) {
-            if (overallP95 === null) overallP95 = ref["95"];
-            basisHTML += buildBasisRow(`BMI (${bmi.toFixed(1)})`, ref, patientValue, formatValue);
-          }
-        }
-        if (hasHeight) {
-          const ref = findNearest(data, "Height (cm)", "Height", height);
-          if (ref) {
-            if (overallP95 === null) overallP95 = ref["95"];
-            basisHTML += buildBasisRow(`Height (${height.toFixed(1)}cm)`, ref, patientValue, formatValue);
-          }
+        // "all": prefer the combined Age+BMI+Height model when every input is present.
+        const combinedRaw = parameterKey ? mvLookup(parameterKey) : null;
+        if (combinedRaw) {
+          const combined = { "50": combinedRaw.p50, "95": combinedRaw.p95 };
+          overallP95 = combined["95"];
+          basisHTML += buildBasisRow("Age + BMI + Height", combined, patientValue, formatValue);
+        } else {
+          addAgeRow();
+          addBMIRow();
+          addHeightRow();
         }
       }
 
       if (!basisHTML) return "";
 
-      const statusClass = getStatusClass(patientValue, overallP95);
-      const statusText = getStatusText(patientValue, overallP95);
+      const figureHTML = hasPatientValue ? `
+            <div class="param-figure">
+              <span class="param-value">${formatValue(patientValue)}${unit ? " " + unit : ""}</span>
+              <span class="param-badge ${getStatusClass(patientValue, overallP95)}">${getStatusText(patientValue, overallP95)}</span>
+            </div>` : "";
 
       return `
         <div class="param-card">
@@ -568,11 +674,7 @@
             <div class="param-title">
               <span class="param-name">${parameter}</span>
               <span class="param-desc">${description}</span>
-            </div>
-            <div class="param-figure">
-              <span class="param-value">${formatValue(patientValue)}${unit ? " " + unit : ""}</span>
-              <span class="param-badge ${statusClass}">${statusText}</span>
-            </div>
+            </div>${figureHTML}
           </div>
           ${basisHTML}
         </div>
@@ -584,7 +686,7 @@
     html += buildParamCard("Prostate volume", "Whole-gland size, from MRI segmentation", hasPV ? pv : null, pvData, (v) => v.toFixed(1), "PV", "ml");
     html += buildParamCard("PSA density", "PSA ÷ prostate volume", psad, psadData, (v) => v.toFixed(3), "PSAD", "");
 
-    resultsBody.innerHTML = html || '<p class="muted-msg">Enter patient values to see reference ranges</p>';
+    resultsBody.innerHTML = html || '<p class="muted-msg">Enter age, BMI, and/or height to see reference ranges</p>';
   }
 
   if (document.readyState === 'loading') {
