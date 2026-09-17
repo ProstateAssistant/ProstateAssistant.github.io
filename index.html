@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Age, BMI, and height-adjusted percentile reference ranges for MRI-derived prostate volume, PSA, and PSA density, from a population-based German cohort (Study of Health in Pomerania) free of prostate cancer, BPH, or LUTS.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'">
-<title>PROSTATE - MRI REFERENCE</title>
+<title>PROSTATE REFERENCE PERCENTILES</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
         integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
         crossorigin="anonymous"></script>
@@ -45,9 +45,9 @@
   .ap-blue   { color: #009ddc; }
 
   .mri-caption {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: #8a8d92;
+    font-size: 15px;
+    letter-spacing: 0.2em;
+    color: #17181a;
     margin-bottom: 40px;
   }
 
@@ -304,16 +304,20 @@
           <span class="ap-blue">########################</span>          
                                             
   </pre>
-  <p class="mri-caption">PROSTATE - MRI REFERENCE</p>
-
-  <h1>PROSTATE - MRI REFERENCE</h1>
+  <h1 class="mri-caption">PROSTATE REFERENCE PERCENTILES</h1>
 
   <p class="lede">
-    Enter any of age, BMI, and height, plus PSA and/or prostate volume
-    (both gives PSA density), for age-, BMI-, and height-adjusted
-    percentile references from a population-based German cohort (Study of
-    Health in Pomerania) without known diagnosis of prostate cancer, benign
-    prostatic hyperplasia, or lower urinary tract symptoms.
+    This calculator is based on a study published in
+    <em>European Radiology</em> (Lindholz et al., to be published). It
+    provides age-, BMI-, and height-adjusted median and percentile
+    reference values for PSA, PSA density, and prostate volume (the latter
+    derived from deep-learning whole-gland MRI segmentation) in a German
+    cohort of men without known prostatic disease (prostate cancer, benign
+    prostatic hyperplasia, or lower urinary tract symptoms). This tool can
+    be used to contextualize individual measurements against a normative
+    reference population, or to estimate realistic expected values for
+    clinical and research purposes. Further methodological details are
+    available in the paper.
   </p>
 
   <div class="grid">
@@ -355,24 +359,11 @@
 
   <div class="notes">
     <p>
-      Prostate volume is based on deep-learning whole-gland MRI segmentation,
-      not the ellipsoid formula. PSA is measured from a blood test. A value
-      above the 95th percentile is flagged as a statistical comparison, not a
-      diagnosis. For details, check the paper.
+      A value above the 95th percentile is flagged as a statistical
+      comparison, not a diagnosis.
     </p>
     <p>
-      Reference values for PSA, prostate volume, and PSA density are from
-      the original manuscript by Lindholz et al.
-      (<em>link to be added — to be published</em>). The purpose of this
-      calculator is to contextualize an individual patient's parameters
-      against a healthy reference cohort, expressed as a percentile.
-      Modelling is based on GAMLSS (Generalized Additive Models for
-      Location, Scale, and Shape).
-    </p>
-    <p>
-      This calculator accompanies a study to be published in
-      <em>European Radiology</em>. If used, please cite:
-      <em>(to be published)</em>.
+      If used, please cite: <em>(to be published)</em>.
     </p>
   </div>
 
