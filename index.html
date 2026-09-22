@@ -105,6 +105,14 @@
   input[type="number"] { -moz-appearance: textfield; }
   input::placeholder { color: #c3c4c7; }
 
+  .bmi-readout {
+    text-align: center;
+    font-size: 13px;
+    color: #8a8d92;
+    margin-top: 26px;
+  }
+  .bmi-readout b { color: #55585e; font-weight: 700; }
+
   /* ---- results ---- */
 
   .result-section {
@@ -183,6 +191,14 @@
   }
   .basis-nums .basis-stat-label { color: #8a8d92; margin-right: 5px; }
   .basis-nums b { font-weight: 700; color: #17181a; }
+
+  .basis-warn {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+    color: #b35c12;
+    margin: -12px 0 16px;
+  }
 
   .ptrack {
     position: relative;
@@ -326,12 +342,12 @@
       <input type="number" id="ageInput" min="18" max="100" step="1" placeholder="—" autocomplete="off">
     </label>
     <label>
-      <span class="axis">BMI (kg/m²)</span>
-      <input type="number" id="bmiInput" step="0.1" placeholder="—" autocomplete="off">
-    </label>
-    <label>
       <span class="axis">Height (cm)</span>
       <input type="number" id="heightInput" step="0.1" placeholder="—" autocomplete="off">
+    </label>
+    <label>
+      <span class="axis">Weight (kg)</span>
+      <input type="number" id="weightInput" step="0.1" placeholder="—" autocomplete="off">
     </label>
     <label>
       <span class="axis">PSA (ng/ml)</span>
@@ -342,6 +358,8 @@
       <input type="number" id="pvInput" step="0.1" placeholder="—" autocomplete="off">
     </label>
   </div>
+
+  <p class="bmi-readout" id="bmiReadout"></p>
 
   <div class="result-section">
     <h2>REFERENCE RANGES</h2>
@@ -370,19 +388,20 @@
 </main>
 
 <script>
-  let ageInput, bmiInput, heightInput, psaInput, pvInput, resultsBody, refButtons;
+  let ageInput, heightInput, weightInput, psaInput, pvInput, resultsBody, refButtons, bmiReadout;
   let selectedRef = "all";
 
   function initDOM() {
     ageInput = document.getElementById("ageInput");
-    bmiInput = document.getElementById("bmiInput");
     heightInput = document.getElementById("heightInput");
+    weightInput = document.getElementById("weightInput");
     psaInput = document.getElementById("psaInput");
     pvInput = document.getElementById("pvInput");
     resultsBody = document.getElementById("resultsBody");
+    bmiReadout = document.getElementById("bmiReadout");
     refButtons = document.querySelectorAll(".ref-btn");
 
-    ["ageInput", "bmiInput", "heightInput", "psaInput", "pvInput"].forEach(id => {
+    ["ageInput", "heightInput", "weightInput", "psaInput", "pvInput"].forEach(id => {
       document.getElementById(id).addEventListener("input", updateResults);
     });
 
@@ -531,6 +550,19 @@
     `;
   }
 
+  function getPredictorRange(data, predictorName, key) {
+    let min = Infinity, max = -Infinity;
+    for (const row of data) {
+      const rowPredictor = row.predictor || row.Predictor;
+      if (rowPredictor !== predictorName) continue;
+      const v = row[key];
+      if (v === null || v === undefined || isNaN(v)) continue;
+      if (v < min) min = v;
+      if (v > max) max = v;
+    }
+    return (min <= max) ? [min, max] : null;
+  }
+
   function getStatusClass(patientValue, p95) {
     if (!patientValue || isNaN(patientValue) || !p95 || isNaN(p95)) return "";
     return patientValue > p95 ? "status-high" : "status-normal";
@@ -548,16 +580,23 @@
     }
 
     const age = parseFloat(ageInput.value);
-    const bmi = parseFloat(bmiInput.value);
     const height = parseFloat(heightInput.value);
+    const weight = parseFloat(weightInput.value);
     const psa = parseFloat(psaInput.value);
     const pv = parseFloat(pvInput.value);
 
     const hasAge = age && !isNaN(age);
-    const hasBMI = bmi && !isNaN(bmi);
     const hasHeight = height && !isNaN(height);
+    const hasWeight = weight && !isNaN(weight);
     const hasPSA = psa && !isNaN(psa);
     const hasPV = pv && !isNaN(pv);
+
+    const bmi = (hasHeight && hasWeight) ? weight / Math.pow(height / 100, 2) : NaN;
+    const hasBMI = !isNaN(bmi);
+
+    if (bmiReadout) {
+      bmiReadout.textContent = hasBMI ? `BMI: ${bmi.toFixed(1)} kg/m²` : "";
+    }
 
     const psad = (hasPSA && hasPV) ? (psa / pv) : null;
 
@@ -571,7 +610,7 @@
       return (mvGrid[parameterKey] && mvGrid[parameterKey][key]) || null;
     }
 
-    function buildBasisRow(label, ref, patientValue, formatValue) {
+    function buildBasisRow(label, ref, patientValue, formatValue, outOfRange) {
       if (!ref) return "";
       const hasValue = patientValue !== null && patientValue !== undefined && !isNaN(patientValue);
       const isHigh = hasValue && getStatusClass(patientValue, ref["95"]) === "status-high";
@@ -586,6 +625,9 @@
       const rangeText = hasFullRange
         ? `${formatValue(p5)}–${formatValue(p95)}`
         : (p95 !== undefined && p95 !== null ? formatValue(p95) : "–");
+      const warnHTML = outOfRange
+        ? `<div class="basis-warn">Outside of provided values that were estimated in the study</div>`
+        : "";
       return `
         <div class="basis-row">
           <div class="basis-label">
@@ -595,6 +637,7 @@
               <span><span class="basis-stat-label">${rangeLabel}</span><b>${rangeText}</b></span>
             </span>
           </div>
+          ${warnHTML}
           ${trackHTML}
         </div>
       `;
@@ -611,7 +654,9 @@
         const ref = findNearest(data, "Age (years)", "Age", age);
         if (ref) {
           if (overallP95 === null) overallP95 = ref["95"];
-          basisHTML += buildBasisRow(`Age (${age}y)`, ref, patientValue, formatValue);
+          const range = getPredictorRange(data, "Age (years)", "Age");
+          const outOfRange = !!(range && (age < range[0] || age > range[1]));
+          basisHTML += buildBasisRow(`Age (${age}y)`, ref, patientValue, formatValue, outOfRange);
         }
       }
       function addBMIRow() {
@@ -619,7 +664,9 @@
         const ref = findNearest(data, "BMI (kg/m²)", "BMI", bmi);
         if (ref) {
           if (overallP95 === null) overallP95 = ref["95"];
-          basisHTML += buildBasisRow(`BMI (${bmi.toFixed(1)})`, ref, patientValue, formatValue);
+          const range = getPredictorRange(data, "BMI (kg/m²)", "BMI");
+          const outOfRange = !!(range && (bmi < range[0] || bmi > range[1]));
+          basisHTML += buildBasisRow(`BMI (${bmi.toFixed(1)})`, ref, patientValue, formatValue, outOfRange);
         }
       }
       function addHeightRow() {
@@ -627,7 +674,9 @@
         const ref = findNearest(data, "Height (cm)", "Height", height);
         if (ref) {
           if (overallP95 === null) overallP95 = ref["95"];
-          basisHTML += buildBasisRow(`Height (${height.toFixed(1)}cm)`, ref, patientValue, formatValue);
+          const range = getPredictorRange(data, "Height (cm)", "Height");
+          const outOfRange = !!(range && (height < range[0] || height > range[1]));
+          basisHTML += buildBasisRow(`Height (${height.toFixed(1)}cm)`, ref, patientValue, formatValue, outOfRange);
         }
       }
 
@@ -643,7 +692,13 @@
         if (combinedRaw) {
           const combined = { "50": combinedRaw.p50, "95": combinedRaw.p95 };
           overallP95 = combined["95"];
-          basisHTML += buildBasisRow("Age + BMI + Height", combined, patientValue, formatValue);
+          const meta = mvGrid && mvGrid.meta;
+          const outOfRange = !!(meta && (
+            age < meta.age[0] || age > meta.age[1] ||
+            bmi < meta.bmi[0] || bmi > meta.bmi[1] ||
+            height < meta.height[0] || height > meta.height[1]
+          ));
+          basisHTML += buildBasisRow("Age + BMI + Height", combined, patientValue, formatValue, outOfRange);
         } else {
           addAgeRow();
           addBMIRow();
