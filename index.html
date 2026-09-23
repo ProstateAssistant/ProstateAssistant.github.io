@@ -617,7 +617,12 @@
       const b = Math.round(clamp(bmi, mvGrid.meta.bmi));
       const h = Math.round(clamp(height, mvGrid.meta.height) / 2) * 2;
       const key = `${a}|${b}|${h}`;
-      return (mvGrid[parameterKey] && mvGrid[parameterKey][key]) || null;
+      const row = mvGrid[parameterKey] && mvGrid[parameterKey][key];
+      if (!row) return null;
+      // row holds one value per centile, in mvGrid.meta.pcts order
+      const ref = {};
+      mvGrid.meta.pcts.forEach((p, i) => { ref[String(p)] = row[i]; });
+      return ref;
     }
 
     function buildBasisRow(label, ref, patientValue, formatValue, outOfRange, studyRange) {
@@ -708,9 +713,8 @@
         addHeightRow();
       } else {
         // "all": prefer the combined Age+BMI+Height model when every input is present.
-        const combinedRaw = parameterKey ? mvLookup(parameterKey) : null;
-        if (combinedRaw) {
-          const combined = { "50": combinedRaw.p50, "95": combinedRaw.p95 };
+        const combined = parameterKey ? mvLookup(parameterKey) : null;
+        if (combined) {
           overallP95 = combined["95"];
           const meta = mvGrid && mvGrid.meta;
           const outOfRange = !!(meta && (
