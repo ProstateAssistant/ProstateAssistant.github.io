@@ -7,11 +7,6 @@ Age-, BMI- and height-adjusted reference values for **PSA**, **PSA density** and
 
 > Lindholz M, et al. **Reference values for PSA, PSA density, and MRI prostate volume in healthy German men.** *Eur Radiol* (2026). https://doi.org/10.1007/s00330-026-12937-2
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/percentiles-age-dark.svg">
-  <img alt="Percentile bands for prostate volume, PSA and PSA density by age. Volume and PSA rise and fan out with age; PSA density stays below about 0.11." src=".github/assets/percentiles-age-light.svg">
-</picture>
-
 | | Median | 95th percentile |
 |---|---:|---:|
 | Prostate volume | 31.3 mL | 51.4 mL |
