@@ -14,7 +14,7 @@ Age-, BMI- and height-adjusted reference values for **PSA**, **PSA density** and
 | PSA density | 0.025 ng/mL² | 0.071 ng/mL² |
 
 - **Prostate volume** and **PSA** rise with age.
-- **PSA density** stays stable: its age-adjusted 95th percentile never exceeds **0.11 ng/mL²**.
+- **PSA density** stays stable with age: in the age-adjusted analysis, its 95th percentile stays at or below **0.11 ng/mL²** across all ages.
 - **Higher BMI** means a larger prostate and a lower PSA density.
 
 The percentile tables are in [`data/`](data/). The calculator is a research tool, not a diagnostic device.
